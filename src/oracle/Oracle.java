@@ -5,7 +5,7 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-public class Oracle {
+public class OracleSetup {
 
     public static void main(String[] args) {
         // Información de conexión
@@ -27,10 +27,33 @@ public class Oracle {
             // Crear un Statement para ejecutar comandos SQL
             statement = connection.createStatement();
 
-            // Ejemplo de comando SQL para crear un tablespace
-            String sql = "CREATE TABLESPACE my_tablespace DATAFILE 'C:\\oraclexe\\oradata\\XE\\my_tablespace01.dbf' SIZE 100M AUTOEXTEND ON";
-            statement.execute(sql);
+            // Crear Tablespace
+            String createTablespace = "CREATE TABLESPACE my_tablespace DATAFILE 'C:\\oraclexe\\oradata\\XE\\my_tablespace01.dbf' SIZE 100M AUTOEXTEND ON";
+            statement.execute(createTablespace);
             System.out.println("Tablespace creado exitosamente.");
+
+            // Crear Usuario
+            String createUser = "CREATE USER my_user IDENTIFIED BY my_password DEFAULT TABLESPACE my_tablespace";
+            statement.execute(createUser);
+            System.out.println("Usuario creado exitosamente.");
+
+            // Asignar Roles y Permisos al Usuario
+            String grantRoles = "GRANT CONNECT, RESOURCE TO my_user";
+            statement.execute(grantRoles);
+            System.out.println("Roles asignados exitosamente.");
+
+            String grantPermissions = "GRANT CREATE TABLE, CREATE VIEW TO my_user";
+            statement.execute(grantPermissions);
+            System.out.println("Permisos asignados exitosamente.");
+
+            // Crear Tablas
+            String createTable = "CREATE TABLE my_table (" +
+                                 "id NUMBER PRIMARY KEY," +
+                                 "name VARCHAR2(50)," +
+                                 "description VARCHAR2(255)" +
+                                 ") TABLESPACE my_tablespace";
+            statement.execute(createTable);
+            System.out.println("Tabla creada exitosamente.");
 
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
